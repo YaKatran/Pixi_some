@@ -1,20 +1,24 @@
 import * as PIXI from 'pixi.js'
+import poolManager, { Pool, Pooled } from '../utils/poolManager'
 import Icon from './Icon'
 import ReelsConfig from './ReelsConfig'
 
 const { symbolsDistance, symbolsInReel } = ReelsConfig
 
+const iconsPool = new Pool(() => new Icon(), element => element.parent.removeChild(element))
+
+
 export default class Reel extends PIXI.Container {
     private readonly speed = 3
     private readonly container = this.addChild(new PIXI.Container())
-    private pool: { get: () => Icon, release: (...icons: Icon[]) => void }
+   
     private started = false
     private isStoping = false
     private idsToStop: number[]
 
-    constructor(pool: { get: () => Icon, release: (...icons: Icon[]) => void }) {
+    constructor() {
         super()
-        this.pool = pool
+        
         this.container.y = -symbolsDistance
         this.fillContainer()
     }
@@ -40,9 +44,10 @@ export default class Reel extends PIXI.Container {
             const outIconsNumber = Math.ceil(newY / symbolsDistance)
             const offset = outIconsNumber * symbolsDistance
             newY -= offset
-            const outIcons = this.container.children.slice(0, outIconsNumber) as Icon[]
-            this.container.removeChild(...outIcons)
-            this.pool.release(...outIcons)
+            for (const outIcon of (this.container.children.slice(0, outIconsNumber) as Pooled<Icon>[])){
+                outIcon.returnToPool()
+            }
+
             for (const icon of this.container.children) {
                 icon.y += offset
             }
@@ -75,7 +80,7 @@ export default class Reel extends PIXI.Container {
 
     private fillContainer() {
         for (let i = symbolsInReel + 2 - this.container.children.length; i--;) {
-            const symbol = this.container.addChild(this.pool.get())
+            const symbol = this.container.addChild(iconsPool.getElement())
             symbol.y = symbolsDistance * i
             if (this.idsToStop) {
                 symbol.id = this.idsToStop[this.idsToStop.length - 1]

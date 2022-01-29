@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import poolManager from '../utils/poolManager'
 import Icon from './Icon'
 import Reel from './Reel'
 import ReelsConfig from './ReelsConfig'
@@ -9,12 +10,9 @@ export default class Reels extends PIXI.Container {
     constructor() {
         super()
         const { reels, reelsDistance, mask } = ReelsConfig
-        const iconsPool: Icon[] = []
+        
         for (let i = reels; i--;) {
-            this.reels[i] = this.addChild(new Reel({
-                get: () => iconsPool.pop() || new Icon(),
-                release: (...icons: Icon[]) => { iconsPool.push(...icons) }
-            }))
+            this.reels[i] = this.addChild(new Reel())
             this.reels[i].x = reelsDistance * i
         }
         this.mask = this.addChild((new PIXI.Graphics()).beginFill().drawRect(0, 0, mask.width, mask.height))

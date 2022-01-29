@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js'
 import Main from './Main';
-import Pooled from './reels/Pooled';
 import ResourseLoader from './ResourseLoader';
 
 
