@@ -10,7 +10,7 @@ export default class Reels extends PIXI.Container {
     constructor() {
         super()
         const { reels, reelsDistance, mask } = ReelsConfig
-        
+
         for (let i = reels; i--;) {
             this.reels[i] = this.addChild(new Reel())
             this.reels[i].x = reelsDistance * i
@@ -30,17 +30,23 @@ export default class Reels extends PIXI.Container {
         }
     }
 
-    getIconPosition(reelNumber: number, iconNumberOnReel: number):[number,number] {
+    stopWith(ids: number[][]) {
+        this.reels.forEach((reel, i) => {
+            reel.stopWith(ids[i])
+        });
+    }
+
+    getIconPosition(reelNumber: number, iconNumberOnReel: number): [number, number] {
         let x = (1280 - ReelsConfig.reelsDistance * ReelsConfig.reels) / 2 + (reelNumber + 0.5) * ReelsConfig.reelsDistance
         let y = (768 - ReelsConfig.symbolsDistance * ReelsConfig.symbolsInReel) / 2 + (iconNumberOnReel + 0.5) * ReelsConfig.symbolsDistance
         return [x, y]
     }
 
-    showIconAt(reelNumber: number, iconNumberOnReel: number){
+    showIconAt(reelNumber: number, iconNumberOnReel: number) {
         this.reels[reelNumber].showIconAt(iconNumberOnReel)
     }
 
-    hideIconAt(reelNumber: number, iconNumberOnReel: number){
+    hideIconAt(reelNumber: number, iconNumberOnReel: number) {
         this.reels[reelNumber].hideIconAt(iconNumberOnReel)
     }
 
