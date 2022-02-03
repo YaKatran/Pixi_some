@@ -2,15 +2,16 @@ import * as PIXI from 'pixi.js'
 import Reels from './reels/Reels'
 import ReelsConfig from './reels/ReelsConfig'
 import Panel from './panel/Panel'
-import WinAnimationController from './winAnimationController'
+
 import FakeService from './fakeService/FakeService'
+import Model from './Model'
 
 export default class Main extends PIXI.Container {
     background: PIXI.Container = this.addChild(new PIXI.Container())
     reels: Reels = this.addChild(new Reels())
     panel: Panel = this.addChild(new Panel())
     animationLayer: PIXI.Container = this.addChild(new PIXI.Container())
-    winAnimationController = new WinAnimationController()
+    model = new Model()
     fakeService = new FakeService()
     constructor() {
         super()
